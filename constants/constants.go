@@ -1,0 +1,30 @@
+package constants
+
+const (
+	ModeKey                     = "mode"
+	ModeUsage                   = "run mode of the application, can be local or remote"
+	EnvKey                      = "env"
+	EnvDefaultValue             = "dev"
+	EnvUsage                    = "environment of the application, can be dev, uat, test, pre-prod, prod"
+	DeploymentKey               = "DEPLOYMENT_TYPE"
+	DeploymentTypeDefaultValue  = "vm"
+	CloudTypeUsage              = "can be on-prem or aws_conn based on the strategy of loading configs"
+	PortKey                     = "port"
+	PortDefaultValue            = 8080
+	PortUsage                   = "application.yml port"
+	BaseConfigPathKey           = "base-config-path"
+	BaseConfigPathDefaultValue  = "resources"
+	BaseConfigPathUsage         = "path to folder that stores your configurations"
+	AppVersion                  = "app-version"
+	AppVersionDefaultValue      = "0.0.0"
+	AppVersionUsage             = "app deployed version"
+	HostKey                     = "SERVER_HOST"
+	ServiceDeployedDefaultValue = "bod-der-sqoff"
+	ServiceDeployedKey          = "service-deployed"
+	ServiceDeployedUsage        = "service deployed-possible value bod-der-sqoff/phy-del-sqoff/all-sqoff/feed-ingestion/all"
+	UserAgentDefaultValue       = "post-trade-rms"
+	UserAgentKey                = "user-agent"
+	UserAgentUsage              = "identify the current User Agent and pass it to nginx for tracking"
+	DeploymentModeKey           = "DEPLOYMENT_MODE"
+	DefaultDeploymentModeKey    = "vm"
+)
