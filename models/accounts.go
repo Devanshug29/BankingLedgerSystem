@@ -27,3 +27,9 @@ type Account struct {
 	Balance       int64     `json:"balance"`
 	CreatedAt     time.Time `json:"created_at"`
 }
+
+type TransactionRequest struct {
+	AccountNumber string `json:"accountNumber" binding:"required"`
+	Type          string `json:"type" binding:"required,oneof=deposit withdraw"`
+	Amount        int64  `json:"amount" binding:"required,gt=0"`
+}

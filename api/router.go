@@ -47,8 +47,9 @@ func GetRouter(ctx context.Context) *gin.Engine {
 }
 
 func RegisterRoutes(router *gin.Engine, config *config.Config, c *controller.AccountController) {
-	v1router := router.Group("/v1/accounts")
-	v1router.POST("", c.CreateAccount)
+	v1router := router.Group("/v1")
+	v1router.POST("/accounts", c.CreateAccount)
 	v1router.GET("/:accountNumber", c.GetAccount)
+	v1router.POST("/transactions", c.DepositOrWithdraw)
 
 }

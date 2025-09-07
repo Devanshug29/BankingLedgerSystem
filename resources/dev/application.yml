@@ -3,8 +3,14 @@ postgres_url: "postgres://ledger:ledger@localhost:5432/ledgerdb?sslmode=disable"
 mongo_url: "mongodb://root:example@localhost:27017/transaction_logs?authSource=admin"
 mongo_db: "transaction_logs"
 
-kafka_brokers: "localhost:9092"
-kafka_topic: "transactions"
-
 api_port: "8080"
 processor_workers: 4
+
+kafka:
+  brokers:
+    - "localhost:9092"
+  topic: "transactions"
+  clientID: "banking-ledger-api"
+  acks: "all"      # ensure durability
+  retries: 3
+  partitioner: "account" # custom logic for account-based partitioning

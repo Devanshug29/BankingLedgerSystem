@@ -43,6 +43,22 @@ definitions:
       data:
         description: actual response payload
     type: object
+  models.TransactionRequest:
+    properties:
+      accountNumber:
+        type: string
+      amount:
+        type: integer
+      type:
+        enum:
+        - deposit
+        - withdraw
+        type: string
+    required:
+    - accountNumber
+    - amount
+    - type
+    type: object
 info:
   contact: {}
 paths:
@@ -113,4 +129,35 @@ paths:
       summary: Get account details
       tags:
       - Accounts
+  /v1/transactions:
+    post:
+      consumes:
+      - application/json
+      description: Send a deposit/withdraw request, processed asynchronously via Kafka
+      parameters:
+      - description: Transaction request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.TransactionRequest'
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.SuccessResponse'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Deposit or withdraw funds
+      tags:
+      - Transactions
 swagger: "2.0"

@@ -125,6 +125,58 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/v1/transactions": {
+            "post": {
+                "description": "Send a deposit/withdraw request, processed asynchronously via Kafka",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Transactions"
+                ],
+                "summary": "Deposit or withdraw funds",
+                "parameters": [
+                    {
+                        "description": "Transaction request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.TransactionRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Accepted",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -191,6 +243,29 @@ const docTemplate = `{
                 },
                 "data": {
                     "description": "actual response payload"
+                }
+            }
+        },
+        "models.TransactionRequest": {
+            "type": "object",
+            "required": [
+                "accountNumber",
+                "amount",
+                "type"
+            ],
+            "properties": {
+                "accountNumber": {
+                    "type": "string"
+                },
+                "amount": {
+                    "type": "integer"
+                },
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "deposit",
+                        "withdraw"
+                    ]
                 }
             }
         }

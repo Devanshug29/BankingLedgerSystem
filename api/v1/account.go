@@ -3,6 +3,7 @@ package controller
 import (
 	service2 "BankingLedgerSystem/business"
 	"BankingLedgerSystem/models"
+	"encoding/json"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -81,5 +82,45 @@ func (c *AccountController) GetAccount(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, models.SuccessResponse{
 		Code: http.StatusOK,
 		Data: account,
+	})
+}
+
+// DepositOrWithdraw godoc
+// @Summary Deposit or withdraw funds
+// @Description Send a deposit/withdraw request, processed asynchronously via Kafka
+// @Tags Transactions
+// @Accept json
+// @Produce json
+// @Param request body models.TransactionRequest true "Transaction request"
+// @Success 202 {object} models.SuccessResponse{data=string}
+// @Failure 400 {object} models.ErrorResponse
+// @Router /v1/transactions [post]
+func (c *AccountController) DepositOrWithdraw(ctx *gin.Context) {
+	var req models.TransactionRequest
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, models.ErrorResponse{
+			Code:    http.StatusBadRequest,
+			Message: "invalid request payload",
+			Details: err.Error(),
+		})
+		return
+	}
+
+	// Serialize request
+	payload, _ := json.Marshal(req)
+
+	// Publish to Kafka with accountNumber as key (ordering preserved per account)
+	if err := c.svc.PublishTransaction(ctx, []byte(req.AccountNumber), payload); err != nil {
+		ctx.JSON(http.StatusInternalServerError, models.ErrorResponse{
+			Code:    http.StatusInternalServerError,
+			Message: "could not publish transaction",
+			Details: err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusAccepted, models.SuccessResponse{
+		Code: http.StatusAccepted,
+		Data: "transaction submitted",
 	})
 }

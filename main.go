@@ -5,6 +5,7 @@ import (
 	controller "BankingLedgerSystem/api/v1"
 	service "BankingLedgerSystem/business"
 	"BankingLedgerSystem/internal/flags"
+	"BankingLedgerSystem/kafka"
 	"BankingLedgerSystem/repository"
 	"context"
 	"fmt"
@@ -25,8 +26,9 @@ func main() {
 		panic(fmt.Sprintf("failed to initialize DB: %v", err))
 	}
 
+	producer := kafka.NewProducer(cfg)
 	accountRepo := repository.NewPostgresAccountRepo(connectionProvider)
-	layer := service.NewAccountService(accountRepo)
+	layer := service.NewAccountService(accountRepo, producer)
 	accountController := controller.NewAccountController(layer)
 
 	router := api.GetRouter(ctx)
