@@ -67,6 +67,7 @@ func (c *AccountController) CreateAccount(ctx *gin.Context) {
 // @Router /v1/accounts/{accountNumber} [get]
 func (c *AccountController) GetAccount(ctx *gin.Context) {
 	accountNumber := ctx.Param("accountNumber")
+
 	account, err := c.svc.GetAccount(ctx, accountNumber)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, models.ErrorResponse{
