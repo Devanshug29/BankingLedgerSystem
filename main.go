@@ -9,6 +9,7 @@ import (
 	"BankingLedgerSystem/repository"
 	"context"
 	"fmt"
+	"log"
 
 	_ "BankingLedgerSystem/docs"
 	"BankingLedgerSystem/internal/config"
@@ -23,9 +24,23 @@ func main() {
 	connectionProvider := repository.NewConnectionProvider(cfg)
 	err := connectionProvider.InitDB(ctx, "ledgerdb")
 	if err != nil {
-		panic(fmt.Sprintf("failed to initialize DB: %v", err))
+		log.Panicf("failed to initialize DB: %v", err)
 	}
 
+	monogCOnnectionProvider := repository.NewMongoProvider(cfg)
+	err = monogCOnnectionProvider.InitMongo(ctx)
+	if err != nil {
+		log.Panicf("failed to initialize Mongo DB: %v", err)
+	}
+
+	consumer := kafka.NewConsumer(cfg, connectionProvider)
+	defer consumer.Close()
+
+	// Start consumer in background
+	go func() {
+		log.Println("Kafka consumer started...")
+		consumer.Start(ctx)
+	}()
 	producer := kafka.NewProducer(cfg)
 	accountRepo := repository.NewPostgresAccountRepo(connectionProvider)
 	layer := service.NewAccountService(accountRepo, producer)
@@ -39,8 +54,7 @@ func main() {
 		Handler: router,
 	}
 	if err := appServer.ListenAndServe(); err != nil {
-		panic(fmt.Sprintf("failed to initialize Router: %v", err))
+		log.Panicf("failed to initialize Router: %v", err)
 	}
 
-	fmt.Printf("Loaded config: %+v\n", cfg)
 }
