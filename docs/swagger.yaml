@@ -1,0 +1,116 @@
+definitions:
+  models.Account:
+    properties:
+      account_number:
+        type: string
+      balance:
+        type: integer
+      created_at:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  models.CreateAccountRequest:
+    properties:
+      account_number:
+        type: string
+      balance:
+        type: integer
+      name:
+        type: string
+    required:
+    - name
+    type: object
+  models.ErrorResponse:
+    properties:
+      code:
+        description: application or HTTP error code
+        type: integer
+      details:
+        description: optional details for debugging
+        type: string
+      message:
+        description: human-readable error message
+        type: string
+    type: object
+  models.SuccessResponse:
+    properties:
+      code:
+        description: HTTP status code
+        type: integer
+      data:
+        description: actual response payload
+    type: object
+info:
+  contact: {}
+paths:
+  /v1/accounts:
+    post:
+      consumes:
+      - application/json
+      description: Create an account with initial balance
+      parameters:
+      - description: Account creation request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateAccountRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.Account'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Create a new account
+      tags:
+      - Accounts
+  /v1/accounts/{accountNumber}:
+    get:
+      description: Fetch an account by ID
+      parameters:
+      - description: Account Number
+        in: path
+        name: accountNumber
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.Account'
+              type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get account details
+      tags:
+      - Accounts
+swagger: "2.0"

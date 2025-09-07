@@ -5,6 +5,8 @@ import (
 	"BankingLedgerSystem/repository"
 	"context"
 	"errors"
+	"fmt"
+	"time"
 )
 
 // AccountService defines account-related business operations
@@ -23,6 +25,9 @@ func (s *AccountService) CreateAccount(ctx context.Context, req models.CreateAcc
 	if req.Balance < 0 {
 		return nil, errors.New("balance cannot be negative")
 	}
+
+	accountNumber := fmt.Sprintf("AC%v", time.Now().Unix()) // e.g., AC1725715332 (12 chars)
+	req.AccountNumber = accountNumber
 
 	return s.repo.InsertAccount(ctx, req)
 }

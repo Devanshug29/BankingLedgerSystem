@@ -1,9 +1,12 @@
 package models
 
+import "time"
+
 // CreateAccountRequest represents the payload for creating a new account
 type CreateAccountRequest struct {
-	Name    string  `json:"name" binding:"required"`          // account holder name
-	Balance float64 `json:"balance" binding:"required,gte=0"` // initial balance (must be >= 0)
+	AccountNumber string `json:"account_number"`
+	Name          string `json:"name" binding:"required"`
+	Balance       int64  `json:"balance"`
 }
 
 type ErrorResponse struct {
@@ -15,4 +18,12 @@ type ErrorResponse struct {
 type SuccessResponse struct {
 	Code int         `json:"code"`           // HTTP status code
 	Data interface{} `json:"data,omitempty"` // actual response payload
+}
+
+type Account struct {
+	ID            int64     `json:"id"`
+	AccountNumber string    `json:"account_number"`
+	Name          string    `json:"name"`
+	Balance       int64     `json:"balance"`
+	CreatedAt     time.Time `json:"created_at"`
 }

@@ -1,14 +1,9 @@
 package config
 
 type Config struct {
-	PostgresHost     string `yaml:"postgres_host"`
-	PostgresPort     string `yaml:"postgres_port"`
-	PostgresDB       string `yaml:"postgres_db"`
-	PostgresUser     string `yaml:"postgres_user"`
-	PostgresPassword string `yaml:"postgres_password"`
-	PostgresSSLMode  string `yaml:"postgres_ssl_mode"`
+	PostgresURL string `yaml:"postgres_url"`
 
-	MongoURI string `yaml:"mongo_uri"`
+	MongoURL string `yaml:"mongo_url"`
 	MongoDB  string `yaml:"mongo_db"`
 
 	KafkaBrokers string `yaml:"kafka_brokers"`

@@ -1,26 +1,34 @@
-package v1
+package controller
 
 import (
+	service2 "BankingLedgerSystem/business"
 	"BankingLedgerSystem/models"
-	"BankingLedgerSystem/service"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
+// AccountController handles account APIs
+type AccountController struct {
+	svc *service2.AccountService
+}
+
+func NewAccountController(svc *service2.AccountService) *AccountController {
+	return &AccountController{svc: svc}
+}
+
 // CreateAccount godoc
 // @Summary Create a new account
-// @Description API to create an account with initial balance
-// @ID CreateAccount
+// @Description Create an account with initial balance
 // @Tags Accounts
 // @Accept json
 // @Produce json
 // @Param request body models.CreateAccountRequest true "Account creation request"
-// @Success 201 {object} models.Response{data=models.Account} "Account created successfully"
-// @Failure 400 {object} models.Response{error=string} "Invalid input"
-// @Failure 500 {object} models.Response{error=string} "Server error"
-// @Router /v1/accounts [POST]
-func CreateAccount(ctx *gin.Context) {
+// @Success 201 {object} models.SuccessResponse{data=models.Account}
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /v1/accounts [post]
+func (c *AccountController) CreateAccount(ctx *gin.Context) {
 	var req models.CreateAccountRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, models.ErrorResponse{
@@ -31,37 +39,46 @@ func CreateAccount(ctx *gin.Context) {
 		return
 	}
 
-	account, err := service.CreateAccount(ctx, req)
+	account, err := c.svc.CreateAccount(ctx, req)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, models.ErrorResponse{
-			Code:    http.StatusBadRequest,
-			Message: "invalid request payload",
-			Details: err,
+			Code:    http.StatusInternalServerError,
+			Message: "could not create account",
+			Details: err.Error(),
 		})
 		return
 	}
 
-	ctx.JSON(http.StatusCreated, models.SuccessResponse(account))
+	ctx.JSON(http.StatusCreated, models.SuccessResponse{
+		Code: http.StatusCreated,
+		Data: account,
+	})
 }
 
 // GetAccount godoc
 // @Summary Get account details
-// @Description API to fetch account details by ID
-// @ID GetAccount
+// @Description Fetch an account by ID
 // @Tags Accounts
-// @Accept json
 // @Produce json
-// @Param id path int true "Account ID"
-// @Success 200 {object} models.Response{data=models.Account} "Account retrieved successfully"
-// @Failure 404 {object} models.Response{error=string} "Account not found"
-// @Router /v1/accounts/{id} [GET]
-func GetAccount(ctx *gin.Context) {
-	id := ctx.Param("id")
-	account, err := service.GetAccount(ctx, id)
+// @Param accountNumber path string true "Account Number"
+// @Success 200 {object} models.SuccessResponse{data=models.Account}
+// @Failure 404 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /v1/accounts/{accountNumber} [get]
+func (c *AccountController) GetAccount(ctx *gin.Context) {
+	accountNumber := ctx.Param("accountNumber")
+	account, err := c.svc.GetAccount(ctx, accountNumber)
 	if err != nil {
-		ctx.JSON(http.StatusNotFound, models.ErrorResponse(err.Error()))
+		ctx.JSON(http.StatusInternalServerError, models.ErrorResponse{
+			Code:    http.StatusInternalServerError,
+			Message: "could not fetch account",
+			Details: err.Error(),
+		})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, models.SuccessResponse(account))
+	ctx.JSON(http.StatusOK, models.SuccessResponse{
+		Code: http.StatusOK,
+		Data: account,
+	})
 }

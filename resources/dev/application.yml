@@ -1,15 +1,10 @@
-postgres_host: localhost
-postgres_port: 5432
-postgres_db: banking_ledger
-postgres_user: postgres
-postgres_password: postgres
-postgres_ssl_mode: disable
+postgres_url: "postgres://ledger:ledger@localhost:5432/ledgerdb?sslmode=disable"
 
-mongo_uri: "mongodb://root:example@localhost:27017/transaction_logs?authSource=admin"
-mongo_db: transaction_logs
+mongo_url: "mongodb://root:example@localhost:27017/transaction_logs?authSource=admin"
+mongo_db: "transaction_logs"
 
 kafka_brokers: "localhost:9092"
-kafka_topic: transactions
+kafka_topic: "transactions"
 
 api_port: "8080"
-processor_workers: 5
+processor_workers: 4
