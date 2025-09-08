@@ -117,7 +117,7 @@ func (c *AccountController) DepositOrWithdraw(ctx *gin.Context) {
 	}
 
 	// Publish to Kafka with accountNumber as key (ordering preserved per account)
-	if err := c.svc.PublishTransaction(ctx, []byte(req.AccountNumber), payload); err != nil {
+	if err = c.svc.PublishTransaction(ctx, []byte(req.AccountNumber), payload); err != nil {
 		ctx.JSON(http.StatusInternalServerError, models.ErrorResponse{
 			Code:    http.StatusInternalServerError,
 			Message: "could not publish transaction",
