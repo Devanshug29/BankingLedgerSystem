@@ -106,8 +106,15 @@ func (c *AccountController) DepositOrWithdraw(ctx *gin.Context) {
 		return
 	}
 
-	// Serialize request
-	payload, _ := json.Marshal(req)
+	payload, err := json.Marshal(req)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, models.ErrorResponse{
+			Code:    http.StatusInternalServerError,
+			Message: "Marshal error",
+			Details: err.Error(),
+		})
+		return
+	}
 
 	// Publish to Kafka with accountNumber as key (ordering preserved per account)
 	if err := c.svc.PublishTransaction(ctx, []byte(req.AccountNumber), payload); err != nil {

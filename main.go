@@ -27,13 +27,13 @@ func main() {
 		log.Panicf("failed to initialize DB: %v", err)
 	}
 
-	monogCOnnectionProvider := repository.NewMongoProvider(cfg)
-	err = monogCOnnectionProvider.InitMongo(ctx)
+	mongoConnectionProvider := repository.NewMongoProvider(cfg)
+	err = mongoConnectionProvider.InitMongo(ctx)
 	if err != nil {
 		log.Panicf("failed to initialize Mongo DB: %v", err)
 	}
 
-	consumer := kafka.NewConsumer(cfg, connectionProvider)
+	consumer := kafka.NewConsumer(cfg, connectionProvider, mongoConnectionProvider)
 	defer consumer.Close()
 
 	// Start consumer in background

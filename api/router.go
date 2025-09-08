@@ -30,26 +30,13 @@ func GetRouter(ctx context.Context) *gin.Engine {
 	})
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	//// API routes
-	//api := router.Group("/api/v1")
-	//{
-	//	// Accounts
-	//	api.POST("/accounts", createAccountHandler)
-	//	api.GET("/accounts/:id", getAccountHandler)
-	//
-	//	// Transactions
-	//	api.POST("/transactions/deposit", depositHandler)
-	//	api.POST("/transactions/withdraw", withdrawHandler)
-	//	api.GET("/accounts/:id/transactions", getTransactionsHandler)
-	//}
-
 	return router
 }
 
 func RegisterRoutes(router *gin.Engine, config *config.Config, c *controller.AccountController) {
 	v1router := router.Group("/v1")
 	v1router.POST("/accounts", c.CreateAccount)
-	v1router.GET("/:accountNumber", c.GetAccount)
+	v1router.GET("/accounts/:accountNumber", c.GetAccount)
 	v1router.POST("/transactions", c.DepositOrWithdraw)
 
 }

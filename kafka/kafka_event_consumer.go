@@ -38,7 +38,7 @@ type Consumer struct {
 }
 
 // NewConsumer initializes consumer with config + DB
-func NewConsumer(cfg *config.Config, db *repository.ConnectionProvider) *Consumer {
+func NewConsumer(cfg *config.Config, db *repository.ConnectionProvider, mongo *repository.MongoProvider) *Consumer {
 	return &Consumer{
 		reader: kafka.NewReader(kafka.ReaderConfig{
 			Brokers:        cfg.Kafka.Brokers,
@@ -46,10 +46,12 @@ func NewConsumer(cfg *config.Config, db *repository.ConnectionProvider) *Consume
 			GroupID:        "banking-ledger-consumer", // consumer group
 			CommitInterval: 0,                         // disable auto-commit
 		}),
-		db:      db,
-		topic:   cfg.Kafka.Topic,
-		retries: 3,                    // retry count
-		workers: cfg.ProcessorWorkers, // parallelism
+		mongo:     mongo,
+		mongoColl: cfg.MongoDB,
+		db:        db,
+		topic:     cfg.Kafka.Topic,
+		retries:   3,                    // retry count
+		workers:   cfg.ProcessorWorkers, // parallelism
 	}
 }
 
