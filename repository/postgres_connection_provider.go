@@ -46,7 +46,6 @@ type ConnectionProvider struct {
 	db     *pgxpool.Pool
 }
 
-// InitDB initializes and verifies the Postgres connection pool
 func (c *ConnectionProvider) InitDB(ctx context.Context, name string) error {
 	poolConfig, err := c.getPoolConfig()
 	if err != nil {

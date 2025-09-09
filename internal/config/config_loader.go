@@ -20,7 +20,6 @@ func InitConfigs(ctx context.Context, fileNames ...string) {
 	var c Config
 	for _, f := range fileNames {
 		path := fmt.Sprintf("%s/%s", base, f)
-		fmt.Println("Loading config from:", path)
 
 		file, err := os.ReadFile(path)
 		if err != nil {
@@ -33,10 +32,8 @@ func InitConfigs(ctx context.Context, fileNames ...string) {
 	}
 
 	cfg = &c
-	fmt.Printf("✅ configs initialised for env=%s from %s\n", deploymentMode.Env(), base)
 }
 
-// GetConfig returns the loaded configuration singleton
 func GetConfig() *Config {
 	if cfg == nil {
 		panic("config not initialised, call InitConfigs() first")

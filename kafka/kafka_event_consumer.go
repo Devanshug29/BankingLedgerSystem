@@ -15,8 +15,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-// TransactionEvent represents what producer published
-
 type TransactionEvent struct {
 	AccountNumber string  `json:"accountNumber"`
 	Type          string  `json:"type"` // deposit | withdraw
@@ -91,7 +89,6 @@ func (c *Consumer) processTransaction(ctx context.Context, ev *TransactionEvent)
 		return err
 	}
 
-	// commit only after success
 	if err := tx.Commit(ctx); err != nil {
 		return err
 	}

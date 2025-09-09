@@ -10,14 +10,14 @@ type CreateAccountRequest struct {
 }
 
 type ErrorResponse struct {
-	Code    int    `json:"code"`              // application or HTTP error code
-	Message string `json:"message"`           // human-readable error message
-	Details string `json:"details,omitempty"` // optional details for debugging
+	Code    int    `json:"code"`
+	Message string `json:"message"`
+	Details string `json:"details,omitempty"`
 }
 
 type SuccessResponse struct {
-	Code int         `json:"code"`           // HTTP status code
-	Data interface{} `json:"data,omitempty"` // actual response payload
+	Code int         `json:"code"`
+	Data interface{} `json:"data,omitempty"`
 }
 
 type Account struct {

@@ -26,12 +26,10 @@ func init() {
 	flag.Parse()
 }
 
-// Env is the runtime environment
 func (vm DockerBasedDeployment) Env() string {
 	return *env
 }
 
-// BaseConfigPath is the path that holds the configuration files
 func (vm DockerBasedDeployment) BaseConfigPath() string {
 	return *baseConfigPath
 }
@@ -40,7 +38,6 @@ func (vm DockerBasedDeployment) GetConfigPath() string {
 	return *baseConfigPath + "/" + *env
 }
 
-// Port is the application.yml port number where the process will be started
 func (vm DockerBasedDeployment) Port() int {
 	port := os.Getenv(constants.PortKey)
 	if port == "" {

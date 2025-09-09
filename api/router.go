@@ -18,13 +18,11 @@ func init() {
 func GetRouter(ctx context.Context) *gin.Engine {
 	router := gin.New()
 
-	// Middlewares
 	router.Use(
 		gin.Logger(),
 		gin.Recovery(),
 	)
 
-	// Healthcheck
 	router.GET("/health", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"status": "ok"})
 	})

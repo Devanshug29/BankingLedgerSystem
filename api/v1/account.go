@@ -9,7 +9,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// AccountController handles account APIs
 type AccountController struct {
 	svc *service2.AccountService
 }
@@ -116,7 +115,6 @@ func (c *AccountController) DepositOrWithdraw(ctx *gin.Context) {
 		return
 	}
 
-	// Publish to Kafka with accountNumber as key (ordering preserved per account)
 	if err = c.svc.PublishTransaction(ctx, []byte(req.AccountNumber), payload); err != nil {
 		ctx.JSON(http.StatusInternalServerError, models.ErrorResponse{
 			Code:    http.StatusInternalServerError,
