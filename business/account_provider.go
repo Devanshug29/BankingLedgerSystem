@@ -27,7 +27,7 @@ func (s *AccountService) CreateAccount(ctx context.Context, req models.CreateAcc
 		return nil, errors.New("balance cannot be negative")
 	}
 
-	accountNumber := fmt.Sprintf("AC%v", time.Now().Unix()) // e.g., AC1725715332 (12 chars)
+	accountNumber := fmt.Sprintf("AC%v", time.Now().Unix())
 	req.AccountNumber = accountNumber
 
 	return s.repo.InsertAccount(ctx, req)
