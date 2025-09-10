@@ -24,7 +24,6 @@ type MockAccountServiceInterface struct {
 	isgomock struct{}
 }
 
-
 // MockAccountServiceInterfaceMockRecorder is the mock recorder for MockAccountServiceInterface.
 type MockAccountServiceInterfaceMockRecorder struct {
 	mock *MockAccountServiceInterface
