@@ -8,6 +8,8 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
+//go:generate sh -c "sh $(git rev-parse --show-toplevel)/scripts/mock_generator.sh $GOFILE"
+
 // AccountRepository defines all DB operations for accounts
 type AccountRepository interface {
 	InsertAccount(ctx context.Context, req models.CreateAccountRequest) (*models.Account, error)
@@ -23,7 +25,6 @@ func NewPostgresAccountRepo(db *ConnectionProvider) *PostgresAccountRepo {
 	return &PostgresAccountRepo{db: db}
 }
 
-// InsertAccount inserts a new account into the DB
 func (r *PostgresAccountRepo) InsertAccount(ctx context.Context, req models.CreateAccountRequest) (*models.Account, error) {
 	query := `INSERT INTO accounts (account_number, owner_name, balance) 
 	          VALUES ($1, $2, $3) 
@@ -38,7 +39,6 @@ func (r *PostgresAccountRepo) InsertAccount(ctx context.Context, req models.Crea
 	return &acc, nil
 }
 
-// FindAccountByID fetches an account by its ID
 func (r *PostgresAccountRepo) FindAccountByID(ctx context.Context, id string) (*models.Account, error) {
 	query := `SELECT id, account_number, owner_name, balance, created_at 
 	          FROM accounts WHERE account_number = $1`

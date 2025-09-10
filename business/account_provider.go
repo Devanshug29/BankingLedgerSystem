@@ -12,13 +12,19 @@ import (
 
 //go:generate sh -c "sh $(git rev-parse --show-toplevel)/scripts/mock_generator.sh $GOFILE"
 
+type AccountServiceInterface interface {
+	CreateAccount(ctx context.Context, req models.CreateAccountRequest) (*models.Account, error)
+	GetAccount(ctx context.Context, id string) (*models.Account, error)
+	PublishTransaction(ctx context.Context, key, payload []byte) error
+}
+
 // AccountService defines account-related business operations
 type AccountService struct {
 	repo          repository.AccountRepository
-	kafkaProducer *kafka.Producer
+	kafkaProducer kafka.ProducerInterface
 }
 
-func NewAccountService(repo repository.AccountRepository, kafkaProducer *kafka.Producer) *AccountService {
+func NewAccountService(repo repository.AccountRepository, kafkaProducer kafka.ProducerInterface) *AccountService {
 	return &AccountService{repo: repo, kafkaProducer: kafkaProducer}
 }
 
@@ -36,6 +42,7 @@ func (s *AccountService) CreateAccount(ctx context.Context, req models.CreateAcc
 func (s *AccountService) GetAccount(ctx context.Context, id string) (*models.Account, error) {
 	return s.repo.FindAccountByID(ctx, id)
 }
+
 func (s *AccountService) PublishTransaction(ctx context.Context, key, payload []byte) error {
 	return s.kafkaProducer.Publish(ctx, key, payload)
 }

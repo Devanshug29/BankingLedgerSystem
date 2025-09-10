@@ -9,6 +9,12 @@ import (
 	"github.com/segmentio/kafka-go"
 )
 
+//go:generate sh -c "sh $(git rev-parse --show-toplevel)/scripts/mock_generator.sh $GOFILE"
+
+type ProducerInterface interface {
+	Publish(ctx context.Context, key, payload []byte) error
+}
+
 type Producer struct {
 	writer *kafka.Writer
 	topic  string
